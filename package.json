@@ -1,0 +1,16 @@
+{
+  "name": "serverless-user-management",
+  "version": "1.0.0",
+  "description": "A user management system built on serverless architecture",
+  "main": "handler.js",
+  "scripts": {
+    "deploy": "serverless deploy",
+    "start": "serverless offline"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.3.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^8.0.0"
+  }
+}
