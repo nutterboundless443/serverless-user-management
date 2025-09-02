@@ -1,0 +1,47 @@
+service: serverless-user-management
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+
+functions:
+  register:
+    handler: handler.register
+    events:
+      - http:
+          path: register
+          method: post
+  login:
+    handler: handler.login
+    events:
+      - http:
+          path: login
+          method: post
+  getUser:
+    handler: handler.getUser
+    events:
+      - http:
+          path: user/{id}
+          method: get
+  managePermissions:
+    handler: handler.managePermissions
+    events:
+      - http:
+          path: permissions
+          method: post
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
