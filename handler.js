@@ -7,7 +7,7 @@ module.exports.register = async (event) => {
 
     // Validate user input
     if (!data.userId || !data.password) {
-        return { statusCode: 400, body: JSON.stringify({ message: '用户ID和密码是必需的' }) }; 
+        return { statusCode: 400, body: JSON.stringify({ message: 'User ID and password are required' }) }; 
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -17,11 +17,11 @@ module.exports.register = async (event) => {
         Item: {
             userId: data.userId,
             password: hashedPassword,
-            // 其他用户信息
+            // Other user information
         }
     };
     await dynamoDB.put(params).promise();
-    return { statusCode: 200, body: JSON.stringify({ message: '用户注册成功' }) };
+    return { statusCode: 200, body: JSON.stringify({ message: 'User registered successfully' }) };
 };
 
 module.exports.login = async (event) => {
@@ -29,7 +29,7 @@ module.exports.login = async (event) => {
 
     // Validate user input
     if (!data.userId || !data.password) {
-        return { statusCode: 400, body: JSON.stringify({ message: '用户ID和密码是必需的' }) }; 
+        return { statusCode: 400, body: JSON.stringify({ message: 'User ID and password are required' }) }; 
     }
 
     const params = {
@@ -38,9 +38,9 @@ module.exports.login = async (event) => {
     };
     const result = await dynamoDB.get(params).promise();
     if (result.Item && await bcrypt.compare(data.password, result.Item.password)) {
-        return { statusCode: 200, body: JSON.stringify({ message: '登录成功' }) };
+        return { statusCode: 200, body: JSON.stringify({ message: 'Login successful' }) };
     } else {
-        return { statusCode: 401, body: JSON.stringify({ message: '用户名或密码错误' }) };
+        return { statusCode: 401, body: JSON.stringify({ message: 'Invalid username or password' }) };
     }
 };
 
@@ -55,6 +55,6 @@ module.exports.getUser = async (event) => {
 };
 
 module.exports.managePermissions = async (event) => {
-    // 权限管理逻辑
-    return { statusCode: 200, body: JSON.stringify({ message: '权限管理成功' }) };
+    // Permission management logic
+    return { statusCode: 200, body: JSON.stringify({ message: 'Permission management successful' }) };
 };
