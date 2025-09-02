@@ -3,6 +3,12 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 
 module.exports.register = async (event) => {
     const data = JSON.parse(event.body);
+
+    // Validate user input
+    if (!data.userId || !data.password) {
+        return { statusCode: 400, body: JSON.stringify({ message: '用户ID和密码是必需的' }) };
+    }
+
     const params = {
         TableName: 'Users',
         Item: {
@@ -17,6 +23,12 @@ module.exports.register = async (event) => {
 
 module.exports.login = async (event) => {
     const data = JSON.parse(event.body);
+
+    // Validate user input
+    if (!data.userId || !data.password) {
+        return { statusCode: 400, body: JSON.stringify({ message: '用户ID和密码是必需的' }) };
+    }
+
     const params = {
         TableName: 'Users',
         Key: { userId: data.userId }
