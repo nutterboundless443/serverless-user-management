@@ -21,9 +21,15 @@ module.exports.register = async (event) => {
             // Other user information
         }
     };
-    await dynamoDB.put(params).promise();
-    console.log(`User registered: ${data.userId} at ${new Date().toISOString()}`); // Added logging for user registration with timestamp
-    return { statusCode: 200, body: JSON.stringify({ message: 'User registered successfully' }) };
+
+    try {
+        await dynamoDB.put(params).promise();
+        console.log(`User registered: ${data.userId} at ${new Date().toISOString()}`);
+        return { statusCode: 200, body: JSON.stringify({ message: 'User registered successfully' }) };
+    } catch (error) {
+        console.error('Error registering user:', error);
+        return { statusCode: 500, body: JSON.stringify({ message: 'Could not register user' }) };
+    }
 };
 
 module.exports.login = async (event) => {
@@ -38,11 +44,17 @@ module.exports.login = async (event) => {
         TableName: 'Users',
         Key: { userId: data.userId }
     };
-    const result = await dynamoDB.get(params).promise();
-    if (result.Item && await bcrypt.compare(data.password, result.Item.password)) {
-        return { statusCode: 200, body: JSON.stringify({ message: 'Login successful' }) };
-    } else {
-        return { statusCode: 401, body: JSON.stringify({ message: 'Invalid username or password' }) };
+
+    try {
+        const result = await dynamoDB.get(params).promise();
+        if (result.Item && await bcrypt.compare(data.password, result.Item.password)) {
+            return { statusCode: 200, body: JSON.stringify({ message: 'Login successful' }) };
+        } else {
+            return { statusCode: 401, body: JSON.stringify({ message: 'Invalid username or password' }) };
+        }
+    } catch (error) {
+        console.error('Error logging in user:', error);
+        return { statusCode: 500, body: JSON.stringify({ message: 'Could not login user' }) };
     }
 };
 
@@ -52,8 +64,13 @@ module.exports.getUser = async (event) => {
         TableName: 'Users',
         Key: { userId }
     };
-    const result = await dynamoDB.get(params).promise();
-    return { statusCode: 200, body: JSON.stringify(result.Item) };
+    try {
+        const result = await dynamoDB.get(params).promise();
+        return { statusCode: 200, body: JSON.stringify(result.Item) };
+    } catch (error) {
+        console.error('Error retrieving user:', error);
+        return { statusCode: 500, body: JSON.stringify({ message: 'Could not retrieve user' }) };
+    }
 };
 
 module.exports.managePermissions = async (event) => {
