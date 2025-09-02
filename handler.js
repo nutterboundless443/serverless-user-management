@@ -22,7 +22,7 @@ module.exports.register = async (event) => {
         }
     };
     await dynamoDB.put(params).promise();
-    console.log(`User registered: ${data.userId}`); // Added logging for user registration
+    console.log(`User registered: ${data.userId} at ${new Date().toISOString()}`); // Added logging for user registration with timestamp
     return { statusCode: 200, body: JSON.stringify({ message: 'User registered successfully' }) };
 };
 
